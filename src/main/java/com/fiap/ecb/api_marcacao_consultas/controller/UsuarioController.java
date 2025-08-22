@@ -54,4 +54,22 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido");
         }
     }
+
+    /**
+     * Endpoint para admin alterar senha de qualquer usuário
+     */
+    @PutMapping("/{id}/senha")
+    public ResponseEntity<?> alterarSenhaUsuario(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        try {
+            String novaSenha = request.get("novaSenha");
+            if (novaSenha == null || novaSenha.trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nova senha é obrigatória");
+            }
+
+            Usuario usuario = usuarioService.alterarSenha(id, novaSenha);
+            return ResponseEntity.ok().body(Map.of("message", "Senha alterada com sucesso", "usuario", usuario.getNome()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

@@ -30,4 +30,18 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
+    /**
+     * Altera a senha de um usuário específico (apenas admin)
+     */
+    public Usuario alterarSenha(Long usuarioId, String novaSenha) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Criptografa a nova senha
+        String senhaCriptografada = passwordEncoder.encode(novaSenha);
+        usuario.setSenha(senhaCriptografada);
+
+        return usuarioRepository.save(usuario);
+    }
 }
